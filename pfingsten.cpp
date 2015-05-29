@@ -1,38 +1,3 @@
-/************************************************************************/
-/*                                                                      */
-/*               Copyright 1998-2002 by Ullrich Koethe                  */
-/*                                                                      */
-/*    This file is part of the VIGRA computer vision library.           */
-/*    The VIGRA Website is                                              */
-/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
-/*    Please direct questions, bug reports, and contributions to        */
-/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
-/*        vigra@informatik.uni-hamburg.de                               */
-/*                                                                      */
-/*    Permission is hereby granted, free of charge, to any person       */
-/*    obtaining a copy of this software and associated documentation    */
-/*    files (the "Software"), to deal in the Software without           */
-/*    restriction, including without limitation the rights to use,      */
-/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
-/*    sell copies of the Software, and to permit persons to whom the    */
-/*    Software is furnished to do so, subject to the following          */
-/*    conditions:                                                       */
-/*                                                                      */
-/*    The above copyright notice and this permission notice shall be    */
-/*    included in all copies or substantial portions of the             */
-/*    Software.                                                         */
-/*                                                                      */
-/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
-/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
-/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
-/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
-/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
-/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
-/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
-/*                                                                      */
-/************************************************************************/
- 
 #include <iostream>
 #include <stdio.h>
 #include "vigra/stdimage.hxx"
@@ -86,9 +51,9 @@ void reduceToNextScale(Image & in, Image & out)
 
 int main(int argc, char ** argv)
 {
-    if(argc != 5)
+    if(argc != 6)
     {
-        std::cout << "Usage: " << argv[0] << " infile outfile Octavenum Scalenum" << std::endl;
+        std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
         
         return 1;
@@ -97,6 +62,8 @@ int main(int argc, char ** argv)
     try
     {
         vigra::ImageImportInfo info(argv[1]);
+
+		/*
 		std::stringstream ss;
 		ss << argv[3];
 		int octavenum;
@@ -105,24 +72,90 @@ int main(int argc, char ** argv)
 		ss << argv[4];
 		int scalenum;
 		ss >> scalenum;
-        
+        */
+
         if(info.isGrayscale())
         {
-            vigra::BImage levels[6];
+            vigra::BImage levels[5][5];
+			vigra::BImage dog[5][4];
         
-            levels[0].resize(info.width(), info.height());
+            levels[0][0].resize(info.width(), info.height());
            
-            importImage(info, destImage(levels[0]));
-            
-			for(int i=1; i<5; ++i)
-            {
-                // reduce gray image "octavenum" times
-                reduceToNextLevel(levels[i-1], levels[i], 0.5);
-            }
-            
-			reduceToNextScale(levels[4], levels[5]);
+            importImage(info, destImage(levels[0][0]));
 
-            exportImage(srcImageRange(levels[5]), vigra::ImageExportInfo(argv[2]));
+			//5
+			for(int i=0; i<5; ++i)
+			{
+
+				// Gaußsche Unschärfe (Original + 4) //5
+				for(int j=1; j<5; ++j)
+				{
+					// reduce gray image 5 times
+					reduceToNextLevel(levels[i][j-1], levels[i][j], 1);
+				}
+            
+				// Reduktion der Auflösung (Original + 4)
+				if (i < 4) {
+					reduceToNextScale(levels[i][4], levels[i+1][0]);
+					std::cout << "Bildreduktion Durchlauf: " << i << std::endl;
+				}
+
+			}
+
+			//exportImage(srcImageRange(levels[0][3]), vigra::ImageExportInfo(argv[2]));
+			//exportImage(srcImageRange(levels[0][4]), vigra::ImageExportInfo(argv[3]));
+
+			// Difference of Gaussian
+			//5
+			for(int g=0; g<5; ++g)
+			{
+				std::cout << "Bildsubtraktion Durchlauf: " << g << std::endl;
+				//5
+				for(int h=1; h<5; ++h)
+				{
+
+					dog[g][h-1].resize(levels[g][h-1].size());
+					//dog[g][h-1] = levels[g][h-1] - levels[g][h];
+
+					// create image iterator that points to upper left corner 
+					// of source image
+					vigra::BImage::Iterator s0y = levels[g][h-1].upperLeft();
+					vigra::BImage::Iterator s1y = levels[g][h].upperLeft();
+            
+					// create image iterator that points past the lower right corner of
+					// source image (similarly to the past-the-end iterator in the STL)
+					vigra::BImage::Iterator send = levels[g][h-1].lowerRight();
+            
+					// create image iterator that points to upper left corner 
+					// of destination image
+					vigra::BImage::Iterator dy = dog[g][h-1].upperLeft();
+            
+					// iterate down the first column of the images
+					for(; s0y.y != send.y; ++s0y.y, ++s1y.y, ++dy.y)
+					{
+						// create image iterator that points to the first 
+						// pixel of the current row of the source image
+						vigra::BImage::Iterator s0x = s0y;
+						vigra::BImage::Iterator s1x = s1y;
+						// create image iterator that points to the first 
+						// pixel of the current row of the destination image
+						vigra::BImage::Iterator dx = dy;
+                
+						// iterate across current row
+						for(; s0x.x != send.x; ++s0x.x, ++s1x.x, ++dx.x)
+						{
+							// calculate negative gray value
+							// *20 für Sichtbarkeit im Bild
+							*dx = std::abs(*s0x - *s1x);
+						}
+					}
+
+					std::cout << "Bildreduktion innerer Durchlauf: " << h << std::endl;
+
+				}
+			}
+
+
         }
         else
         {
@@ -134,7 +167,7 @@ int main(int argc, char ** argv)
 
             for(int i=1; i<5; ++i)
             {
-                // reduce color image "octavenum" times
+                // reduce color image 5 times
                 reduceToNextLevel(levels[i-1], levels[i], 0.5);
             }
 
