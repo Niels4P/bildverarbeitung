@@ -51,11 +51,11 @@ void reduceToNextScale(Image & in, Image & out)
 
 int main(int argc, char ** argv)
 {
-    if(argc != 6)
+    if(argc != 7)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
     
@@ -156,6 +156,85 @@ int main(int argc, char ** argv)
 			}
 
 
+			// finding extrema:
+
+			// for loop über skalen
+				//höhe und breite der dogs einer skala auslesen
+				//for loop über dogs aus skala
+					//iteration über pixel aus einem dog
+						//Liste der benachbarten zu überprüfenden pixel erstellen
+						//Liste mit ausgewähltem Pixel vergleichen
+						//falls Werte größer und kleiner gleich Pixel gefunden, Abbruch
+			Size2D size;
+			for(int k = 0; k<5; ++k) {
+
+				size = dog[k][0].size();
+				int width = size.width();
+				int height = size.height();
+
+				for(int l=0; l<4; ++l) {
+					std::cout << "Suchen nach Extrema, Skala: " << k << " DOG: " << l << std::endl;
+
+					for(int y=0; y<height; ++y) {
+						for(int x=0; x<width; ++x) {
+							vigra::UInt8 value = dog[k][l](x,y);
+							bool min = true;
+							bool max = true;
+
+							for(int z=-1; z<=1; ++z){
+								if(min==false && max==false){
+									break;
+								}
+								if(z==-1 && l==0){
+									continue;
+								} else if(z==1 && l==3) {
+									continue;
+								}
+
+								for(int cy=-1; cy<=1; ++cy){
+									if(min==false && max==false){
+										break;
+									}
+									if(y==0 && cy==-1){
+										continue;
+									} else if(y==height-1 && cy==1){
+										continue;
+									}
+									for(int cx=-1; cx<=1; ++cx){
+										if(min==false && max==false){
+											break;
+										}
+										if(x==0 && cx ==-1){
+											continue;
+										} else if(x==width-1 && cx==1){
+											continue;
+										}
+
+										if(value<dog[k][l+z](x+cx,y+cy)){
+											max = false;
+										} else if(value>dog[k][l+z](x+cx,y+cy)){
+											min = false;
+										}
+
+									}
+								}
+							}
+							if(min^max){
+								levels[k][0](x,y) = 255;
+								//std::cout << "Extrema found!" << std::endl;
+							}
+						}
+					}
+				}
+			}
+
+			exportImage(srcImageRange(levels[0][0]), vigra::ImageExportInfo(argv[2]));
+			exportImage(srcImageRange(levels[1][0]), vigra::ImageExportInfo(argv[3]));
+			exportImage(srcImageRange(levels[2][0]), vigra::ImageExportInfo(argv[4]));
+			exportImage(srcImageRange(levels[3][0]), vigra::ImageExportInfo(argv[5]));
+			exportImage(srcImageRange(levels[4][0]), vigra::ImageExportInfo(argv[6]));
+
+			
         }
         else
         {
