@@ -11,6 +11,9 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/convolution.hxx>
 #include <vigra/multi_math.hxx>
+#include <vigra/matrix.hxx>
+#include <vigra/regression.hxx>
+#include <vigra/quadprog.hxx>
 
 inline double log2(double n)
 {
@@ -60,6 +63,74 @@ inline bool localExtremum(const std::vector<vigra::MultiArray<2, float> > & dog,
                  &&  my_val > dog[i-1](x-1,y+1) && my_val > dog[i-1](x,y+1) && my_val > dog[i-1](x+1,y+1)));
 }
 
+bool subpixel(const std::vector<vigra::MultiArray<2, float> > & dog, int i, int x, int y, float threshold, float ratio, float height, float width, float& off_x, float& off_y, float& off_s)
+{
+		using namespace vigra;
+		using namespace vigra::linalg;
+
+		int s = i-2;
+		float dx = (dog[s](x+1,y)-dog[s](x-1,y))/2;
+		float dy = (dog[s](x,y+1)-dog[s](x,y-1))/2;
+		float ds = (dog[s+1](x,y)-dog[s-1](x,y))/2;
+
+
+		if (sqrt(dog[s](x,y)+(pow(dx,2)+pow(dy,2)+pow(ds,2))*1.5f)<threshold*256)
+		{
+			return false;
+		}
+
+		float d2 = 2*dog[s](x,y);
+		float dxx = dog[s](x+1,y)+dog[s](x-1,y)-d2;
+		float dyy = dog[s](x,y+1)+dog[s](x,y-1)-d2;
+		float dss = dog[s+1](x,y)+dog[s-1](x,y)-d2;
+
+		float dxy = (dog[s](x+1,y+1)-dog[s](x-1,y+1)-dog[s](x+1,y-1)+dog[s](x-1,y-1))/2;
+		float dxs = (dog[s+1](x+1,y)-dog[s+1](x-1,y)-dog[s-1](x+1,y)+dog[s-1](x-1,y))/2;
+		float dys = (dog[s+1](x,y+1)-dog[s+1](x,y-1)-dog[s-1](x,y+1)+dog[s-1](x,y-1))/2;
+
+		float H_data[] = {
+			 dxx, dxy, dxs,
+			 dxy, dyy, dys,
+			 dxs, dys, dss
+		};
+
+		float D_data[] = {
+			dx,
+			dy,
+			ds
+		};
+
+		Matrix<float> H(Shape2(3,3), H_data);
+		Matrix<float> D(Shape2(3,1), D_data);
+		Matrix<float> offset(Shape2(3,1));
+
+		float soe = pow(trace(H),2)/determinant(H);
+		
+		if (soe>=(pow((ratio+1),2))/ratio){
+			return false;
+		}
+		
+		bool solution = linearSolve(H, D, offset);
+		if (solution){
+			off_x = offset(0,0);
+			off_y = offset(1,0);
+			off_s = offset(2,0);
+
+			if ((x == 1 && off_x >= 0.5f) || (x == width && off_x <= -0.5f))
+				off_x = 0.0f;
+			if ((y == 1 && off_y >= 0.5f) || (y == height && off_y <= -0.5f))
+				off_y = 0.0f;
+
+			return true;
+		}
+		return false;
+
+
+		//TODO:
+		//offset nicht größer als 0,5: wie sieht das bei sigma aus?
+		//negative Koordinaten?! siehe Subpixel- und Rechteckbilder
+}
+
 /**
  * The main method - will be called at program execution
  */
@@ -68,6 +139,7 @@ int main(int argc, char** argv)
     using namespace std;
     using namespace vigra;
     using namespace vigra::multi_math;
+	using namespace vigra::linalg;
     
     namespace po = boost::program_options;
     
@@ -77,6 +149,8 @@ int main(int argc, char** argv)
            dog_threshold;
     bool   double_image_size,
            iterative_interval_creation;
+	float  threshold = 0.03f;
+	float  ratio = 10.0f;
     
     //Program (argument) options
     po::options_description desc("Allowed options");
@@ -109,6 +183,9 @@ int main(int argc, char** argv)
         //Load the given image
         MultiArray<2, float> image;
         importImage(image_filename, image);
+
+		int width = image.width();
+		int height = image.height();
         
         //If we rescale the image (double in each direction), we need to adjust the
         //octave offset - thus resulting DoG positions will be divided by two at the
@@ -179,6 +256,8 @@ int main(int argc, char** argv)
                 {
                     //Determine current sigma of this dog step at this octave:
                     double current_sigma  = o*sigma + pow(k, i-2.0)*sigma;
+
+					//logk(current_sigma/sigma - o) + 2.0 = i
                     
                     for (int y=1; y<dog[i-2].height()-1; ++y)
                     {
@@ -187,24 +266,28 @@ int main(int argc, char** argv)
                             float my_val = dog[i-2](x,y);
                             if ( abs(my_val) > dog_threshold && localExtremum(dog, i,x,y))
                             {
-                                dogFeature new_feature = { x*pow(2,o+o_offset),
-                                                           y*pow(2,o+o_offset),
-                                                           current_sigma,
-                                                           abs(my_val)};
-								dogFeatures.push_back(new_feature);
+								float off_x, off_y, off_s;
+								if (subpixel(dog,i,x,y,threshold,ratio,dog[i-2].height()-1,dog[i-2].width()-1,off_x,off_y,off_s)){
+
+									dogFeature new_feature = { (x-off_x)*pow(2,o+o_offset),
+															   (y-off_y)*pow(2,o+o_offset),
+															   (current_sigma-off_s),
+															   abs(my_val)};
+									dogFeatures.push_back(new_feature);
+								}
                             }
                         }
                     }
                 }
-                exportImage(dog[i-1], file_basename + "_dog" + boost::lexical_cast<string>(i-1) + ".png");
-                exportImage(octave[i], file_basename + "_level" + boost::lexical_cast<string>(i) + ".png");
+                //exportImage(dog[i-1], file_basename + "_dog" + boost::lexical_cast<string>(i-1) + ".png");
+                //exportImage(octave[i], file_basename + "_level" + boost::lexical_cast<string>(i) + ".png");
             }
             
             //rescale for next pyramid step and resize old image (3rd from top)
             octave[0].reshape(octave[0].shape()/2);
             resizeImageNoInterpolation(octave[s], octave[0]);
         }
-        
+        /*
         cout << "       x;        y;       s;         m\n";
         for(const dogFeature& f : dogFeatures)
         {
@@ -214,6 +297,18 @@ int main(int argc, char** argv)
                  << setw(8) << fixed << setprecision(3) << f.m << "\n";
         }
         cout << "Found: " << dogFeatures.size() << " candidates.\n";
+		*/
+
+		cout << "<svg height=\"" << height << "\" width=\"" << width << "\">\n";
+		cout << "<g>\n" << "<image y=\"0.0\" x=\"0.0\" xlink:href=\"" << image_filename << "\" height=\"" << height << "\" width=\"" << width << "\" />\n" << "</g>\n";
+		cout << "<g>\n";
+		for(const dogFeature& f : dogFeatures)
+        {
+			cout << "<rect x=\"" << f.x-(f.s/2) << "\" y=\"" << f.y-(f.s/2) << "\" height=\"" << f.s << "\" width=\"" << f.s << "\" stroke=\"yellow\" fill=\"none\" />\n";
+        }
+		cout << "</g>\n";
+		cout << "</svg>"; 
+
 
     }
     catch(po::required_option& e)
