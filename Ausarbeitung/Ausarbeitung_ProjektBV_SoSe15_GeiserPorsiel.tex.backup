@@ -1,0 +1,64 @@
+\documentclass[a4paper,12pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{graphicx}
+
+\parindent 0pt
+
+% Title Page
+\title{Zwischenbericht Master-Projekt Bildverarbeitung}
+\subtitle{SoSe 2015}
+\author{Dorothee Geiser, Niels Porsiel}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\vspace{0.3\textheight}
+
+\begin{abstract}
+Im laufe des Semesters haben wir uns mit Scale-Invariant Feature Transform (kurz SIFT)
+beschäftigt. Dabei haben wir uns am Paper \textit{Distinctive Image Features from Scale-
+Invariant Keypoints} von David G. Love \cite{Love} orientiert. Unsere Aufgabe war es zu versuchen, 
+SIFT nachzubauen. Dieser Zwischenbericht soll nun einen Überblick darüber geben, was wir 
+geschafft haben.
+\end{abstract}
+
+\newpage
+
+\section{Anfang}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.45\textwidth]{bild}
+  \fbox{ \includegraphics[width=0.45\textwidth]{1Extrema} }
+  \caption{Titel der Grafik}
+  \label{labelname}
+\end{figure}
+
+%Die Grafik in Abbildung \ref{labelname} auf Seite \pageref{labelname} ..
+
+\section{weiter}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.45\textwidth]{2SubpixelmHintergrund} 
+  \includegraphics[width=0.45\textwidth]{4RechteckemHkorrigiert} 
+  \includegraphics[width=0.45\textwidth]{5RechteckOrientierung} 
+  \includegraphics[width=0.45\textwidth]{6RechteckOrientierungLastVer} 
+  \caption{Titel der Grafik}
+  \label{labelname}
+\end{figure}
+
+%%%% Literatur
+\newpage
+\begin{thebibliography}{------}
+\bibitem[Love04]{Love}
+	J. U. Bowie, R. L\"uthy and D. Eisenberg.
+	{\em A Method to Identify Protein Sequences That Fold 
+	into a Known Three-Dimensional Structure}.
+	Science, 1991 (253), pp 164-170
+\end{thebibliography}
+
+\end{document}          
