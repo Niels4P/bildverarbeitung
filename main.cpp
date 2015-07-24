@@ -17,6 +17,7 @@
 #include <vigra/gaussians.hxx>
 #include <vigra/resampling_convolution.hxx>
 #include <vigra/basicgeometry.hxx>
+#include <vigra/splineimageview.hxx>
 
 inline double log2(double n)
 {
@@ -249,6 +250,81 @@ bool orientation(const std::vector<vigra::MultiArray<2, float> > & octave, int i
 }
 
 
+bool keypoint(const std::vector<vigra::MultiArray<2, float> > & octave, int i, int x, int y, double angle, std::vector<std::vector<double>>& feature){
+	using namespace std;
+	using namespace vigra;
+	using namespace vigra::multi_math;
+
+	//check, if keypoint is too close to the edge of any dimension
+	if (x < 16 || x > octave[i].width() - 16)
+		return false;
+
+	if (y < 16 || y > octave[i].height() - 16)
+		return false;
+
+	SplineImageView<2, double> spi(srcImageRange(octave[i]));
+
+	// Gaussian weighted circular window (8 pixel radius)
+	Gaussian<double> gauss(8.0);
+	
+	vector<vector<double>> bin(16, vector<double>(8));
+
+	// orientation of neighbouring pixel is weighted by the gaussian and its magnitude and added to a histogram (bin-array)
+	for(int yo=-7; yo<=8; ++yo){
+		for(int xo=-7; xo<=8; ++xo){
+
+			/*P' =(x_P', y_P') ist der Punkt P=(x_P, y_P)^T, der um den Mittelpunkt
+			R=(x_R, x_R)^T um alpha Grad gedreht worden ist, mit:
+
+			x_P' = x_R + (x_P - x_R)*cos(alpha) - (y_P - y_R)*sin(alpha)
+			y_P' = y_R + (x_P - x_R)*sin(alpha) + (y_P - y_R)*cos(alpha)
+			*/
+
+			double curr_x = x + ((x+xo) - x)*cos(angle) - ((y+yo) - y)*sin(angle);
+			double curr_y = y + ((x+xo) - x)*sin(angle) + ((y+yo) - y)*cos(angle);
+
+			double r = sqrt(xo*xo + yo*yo);
+			double weight = gauss(r);
+			double pi_angle = angle/360*2*M_PI;
+
+			double magnitude = sqrt(pow(spi.dx(curr_x,curr_y),2)+pow(spi.dy(curr_x,curr_y),2));
+			int theta = int(abs(((atan2(spi.dy(curr_x,curr_y), spi.dx(curr_x,curr_y))+M_PI-pi_angle)/M_PI)*4));
+			
+			int region = 0;
+			if (yo>=-7 && yo<=-4){
+				region = 0;
+			} else if (yo>-4 && yo<=0){
+				region = 4;
+			} else if (yo>0 && yo<=4){
+				region = 8;
+			} else if (yo>4 && yo<=8){
+				region = 12;
+			}
+
+			if (xo>=-7 && xo<=-4){
+				region += 0;
+			} else if (xo>-4 && xo<=0){
+				region += 1;
+			} else if (xo>0 && xo<=4){
+				region += 2;
+			} else if (xo>4 && xo<=8){
+				region += 3;
+			}
+
+			bin[region][theta] += magnitude * weight;
+		}
+	}
+
+	feature = bin;
+
+	return true;
+
+	//TODO: Werte müssen auch in benachbarte Bins eingetragen werden!
+	//Gewichtet mit 1-Abstand zum Mittelpunkt des Bins! (normalisieren!)
+
+}
+
+
 /**
  * The main method - will be called at program execution
  */
@@ -338,6 +414,8 @@ int main(int argc, char** argv)
 
 		//vector to store the sigma-value of every scale
 		vector<double> scales;
+
+		vector<vector<vector<double>>> keypoints;
         
         //Run the loop
         for(int o=0; o<octaves; ++o)
@@ -410,7 +488,7 @@ int main(int argc, char** argv)
 									}
 									
 									double angle, angle2;
-									bool save;
+									bool save, save_kp;
 									//calculation of orientation of keypoint
 									//keypoint will be dismissed, if save is false
 									//may cause the need to add a second one (if angle2 is given back)
@@ -424,6 +502,12 @@ int main(int argc, char** argv)
 																   abs(my_val),
 																   angle};
 										dogFeatures.push_back(new_feature);
+
+										vector<vector<double>> kp(16, vector<double>(8));
+										save_kp = keypoint(octave, scale, x, y, angle, kp);
+										if (save_kp){
+											keypoints.push_back(kp);
+										}
 									
 										if (angle2){
 											dogFeature new_feature = { (x-off_x)*pow(2,o+o_offset),
@@ -432,6 +516,11 @@ int main(int argc, char** argv)
 																	   abs(my_val),
 																	   angle2};
 											dogFeatures.push_back(new_feature);
+
+											save_kp = keypoint(octave, scale, x, y, angle2, kp);
+											if (save_kp){
+												keypoints.push_back(kp);
+											}
 										}
 									}
 								}
@@ -461,6 +550,7 @@ int main(int argc, char** argv)
 
 		//output will be in scalable vector graphics format
 		//with link to original image file in same directory
+		/*
 		cout << "<svg height=\"" << height << "\" width=\"" << width << "\">\n";
 		cout << "<g>\n" << "<image y=\"0.0\" x=\"0.0\" xlink:href=\"" << image_filename << "\" height=\"" << height << "\" width=\"" << width << "\" />\n" << "</g>\n";
 		cout << "<g>\n";
@@ -470,7 +560,20 @@ int main(int argc, char** argv)
         }
 		cout << "</g>\n";
 		cout << "</svg>"; 
+		*/
 		//transform=\"rotate(" << f.a << "," << f.x-(f.s/2) << "," << f.y-(f.s/2) << ")\"
+
+		for(const vector<vector<double>>& kp : keypoints)
+		{
+			cout << "Keypoint\n";
+			for(int i=0; i<16; ++i){
+				cout << "Region " << i << ": [";
+				for(int j=0; j<8; ++j){
+					cout << j*8 << "° " << kp[i][j] << ", ";
+				}
+				cout << "]\n";
+			}
+		}
 
     }
     catch(po::required_option& e)
