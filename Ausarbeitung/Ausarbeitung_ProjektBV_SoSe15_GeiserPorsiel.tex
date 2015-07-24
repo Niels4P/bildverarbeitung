@@ -19,42 +19,180 @@
 \begin{abstract}
 Im laufe des Semesters haben wir uns mit Scale-Invariant Feature Transform (kurz SIFT)
 beschäftigt. Dabei haben wir uns am Paper \textit{Distinctive Image Features from Scale-
-Invariant Keypoints} von David G. Lowe \cite{Lowe} orientiert. Unsere Aufgabe war es zu versuchen, 
-SIFT nachzubauen. Dieser Zwischenbericht soll nun einen Überblick darüber geben, was wir 
-geschafft haben.
+Invariant Keypoints} von David G. Lowe \cite{Lowe} orientiert. Unsere Aufgabe war es zu 
+versuchen, SIFT nachzubauen. Dieser Zwischenbericht soll nun einen Überblick darüber geben,
+was wir geschafft haben.
 \end{abstract}
 
 \newpage
+\tableofcontents
+\newpage
 
-\section{Keypoint-Erkennung}
-Dazu gehört Bild \ref{Bild1}.
+\section{Unser Code}
+\subsection{Keypoint-Erkennung}
+Die erste Aufgabe war das Erkennen von Keypoints in einem Grauwertbild. Gesucht sind 
+prominente Hell-/Dunkel-Kontraste, die (skaleninvariant) wiederzufinden sein sollen. 
+Das Ergebnis sieht man in Abbildung \ref{Bild1}.
+
+% Umschreibung unseres Codes
+% 
+%     bool double_image_size: legt fest, ob das Inputbild vorher auf doppelte Größe skaliert werden soll (extra Oktave)
+% 
+%     also vorher erwähnen, dass wir Oktaven brauchen und warum
+% 
+%     Anzahl Oktaven: Binärer Logarithmus des Minimums aus Höhe und Breite des Bildes - 3
+% 
+%     Begründung für bestimmte Anzahl Oktaven, Vor-/Nachteile von mehr / weniger
+% 
+%     s=2, k=2^(1/s) (wird irgendwie für die sigma Berechnung gebraucht -> im Paper nachgucken)
+% 
+%     Wozu wird das Sigma gebraucht?
+% 
+%     intervals = s+3 (Anzahl Bilder pro Oktave)
+% 
+%     das gleiche wie für die Anzahl Oktaven
+% 
+%     bool iterative_interval_creation: Iterative Berechnung des Sigma-Wertes für die DOGs oder absolute Berechnung
+% 
+%     wo liegt der Unterschied?
+% 
+%     iterative Berechnung: Ausgangsbild wird mit Sigma geglättet, geglättetes Bild wird als Ausgangsbild für nächste Stufe genommen usw...
+% 
+%     absolute Berechnung: Ausgangsbild wird immer als Ausgangsbild genommen und mit verschiedenen Sigmas die Skalen erzeugt
+% 
+%     gaussianSmoothing: vigra-Funktion, die ein Bild und einen Sigma-Wert annimmt, dieses mit Gauss und gewählter Standardabweichung glättet und das Ergebnisbild ausgibt
+% 
+%     wozu glätten?
+% 
+%     resize: nach jeder Oktave wird das Bild um ein Viertel verkleinert: Halbe Höhe, halbe Breite
+% 
+%     warum?
+% 
+%     wenn mindestens 3 DOGs vorhanden sind: Suche nach Extrema
+% 
+%     warum 3?
+% 
+%     keine Randpixel: for-Schleifen von x=1,y=1 bis x=width-1, y=height-1
+% 
+%     Pixel werden mit insgesamt 26 Nachbarn verglichen:
+% 
+%     8 Nachbarn auf demselben DOG
+% 
+%     9 Nachbarn auf jeweils dem DOG dadrüber und dadrunter
+% 
+%     -> Aufruf der Inline Funktion localExtremum mit dem DOG Array dieser Oktave, der momentanen Skala (i), x und y
+% 
+%     Wert des zu prüfenden Pixel muss entweder höher oder niedriger als der aller seiner Nachbarn sein -> Berechnung geht weiter, sonst Abbruch
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.45\textwidth]{bild}
   \fbox{ \includegraphics[width=0.45\textwidth]{1Extrema} }
-  \caption{Titel der Grafik}
+  \caption{Keypoint-Erkennung. Links das Original, rechts die erkannten Keypoints.}
   \label{Bild1}
 \end{figure}
 
-\section{Keypoint-Reduktion und Verschiebung auf Subpixel-Ebene}
-Dazu gehört Bild \ref{Bild2}.
+\subsection{Keypoint-Reduktion und Verschiebung auf Subpixel-Ebene}
+Im nächsten Schritt sollte die Anzahl der erkannten Keypoints reduziert werden und [...].
+Das Ergebnis sieht man in Abbildung \ref{Bild2}.
+
+%     Grauwert des Pixels muss größer als dog_threshold (5) sein (Parameter)
+% 
+%     warum?
+% 
+%     Verschiebung der gefunden Extrema auf Subpixel-Ebene:
+% 
+%     warum?
+% 
+%     -> Aufruf der Funktion subpixel mit dem DOG Array dieser Oktave, der momentanen Skala (i), x, y, threshold, ratio, Höhe-1 und Breite-1 des DOGs, Offset in x,y,z-Richtung die als Ausgabe-Parameter dienen
+% 
+%     Berechnung der partiellen ersten Ableitung in die 3 Dimensionen x,y,sigma
+% 
+%     Berechnung der partiellen zweiten Ableitung in alle 3 Dimensionen
+% 
+%     Hesse-Matrix aus den zweiten Ableitungen bilden
+% 
+%     Spur der Hesse-Matrix zum Quadrat geteilt durch die Determinante der Hesse-Matrix
+% 
+%     Eliminierung von Extrema, wenn Verhältnis (ratio(10)) der Hauptkrümmung unter gegebenem Wert liegt: ((ratio-1)^2)/ratio
+% 
+%     lineare Berechnung von Vektor der ersten Ableitungen mit der Hesse-Matrix ergibt Offset
+% 
+%     Eliminierung von Extrema mit schwachem Kontrast unter gegebenem Threshold (0.03*256)
+% 
+%     Offset in X und/oder Y Richtung wird ignoriert, wenn Offset > 0.5
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.45\textwidth]{2SubpixelmHintergrund} 
+  \fbox{ \includegraphics[width=0.45\textwidth]{1Extrema} }
   \includegraphics[width=0.45\textwidth]{4RechteckemHkorrigiert} 
-  \includegraphics[width=0.45\textwidth]{5RechteckOrientierung} 
-  \includegraphics[width=0.45\textwidth]{6RechteckOrientierungLastVer} 
-  \caption{Titel der Grafik}
+  \caption{Keypoint-Reduktion und Verschiebung auf Subpixel-Ebene. Links die vorher erkannten
+  Keypoints, rechts die jetzt erkannte, [...] geringere Menge.}
   \label{Bild2}
 \end{figure}
 
-\section{Keypoint-Orientierung}
+\subsection{Keypoint-Orientierung}
+Dann folgte die Keypoint-Orientierung. Das Ergebnis sieht man in Abbildung \ref{Bild3}.
 
-\section{Keypoint Deskriptoren}
+%     Sigma des DOGs rausfinden, aus der der aktuelle Keypoint stammt
+% 
+%     wozu braucht man das sigma? [steht oben]
+% 
+%     Orientation des Keypoints berechnen:
+% 
+%     wozu ist das wissen über die orientierung gut?
+% 
+%     -> Aufruf der Funktion orientation mit dem Octave Array dieser Oktave, der Skala (Sigma), x und y, angle und angle2 sind die Rückgabeparameter der Funktion
+% 
+%     Prüfung, ob 8 Pixel Abstand zum Rand des Bildes in x und y-Richtung vorhanden sind, sonst Eliminierung
+% 
+%     Für die benachbarten 8x8 Pixel des Keypoints wird die Magnitude und der Winkel berechnet
+% 
+%     Der Abstand, der benachbarten Pixel zum Keypoint wird mit einem Gauss gewichtet (8/3, wegen 8 Pixel Radius) und mit der Magnitude multipliziert. Dieser Wert wird je nach berechnetem Winkel in ein Histogramm mit 36 Fächern eingetragen, wobei jedes Fach für 10° steht
+% 
+%     Nach Befüllung des Histogramms wird das Element mit dem größten Wert gesucht
+% 
+%     Falls es ein zweites Element gibt, welches mindestens 80% des Wertes des größten Elements erreicht, wird dieses ebenfalls verwendet und ein zweiter Keypoint mit denselben Koordinaten aber mit dem anderen Winkel erzeugt
+% 
+%     Durch eine Parabelfunktion wird mit dem größten Element und seinen beiden Nachbarn mit den Winkeln jeweils um 5° (quasi in die Mitte des 10° Feldes) verschoben der genaue Winkel berechnet und zurück gegeben
+% 
+%     Falls ein zweites Element gefunden wurde, wird die Operation erneut mit diesem Element ausgeführt
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.45\textwidth]{4RechteckemHkorrigiert} 
+  \includegraphics[width=0.45\textwidth]{5RechteckOrientierung}  
+  \caption{Keypoint-Orientierung. Links ohne, rechts mit Orientierung.}
+  \label{Bild3}
+\end{figure}
+
+\subsection{Keypoint Deskriptoren}
+Schlussendlich kamen noch die Keypoint Deskriptoren.
+
+%     Deskriptor des Keypoints erstellen:
+% 
+%     wozu sind die gut?
+% 
+%     -> Aufruf der Funktion keypoint mit dem Octave Array dieser Oktave, der Skala(Sigma), x, y und Winkel, feature ist der Deskriptor als Array und der Rückgabewert der Funktion
+% 
+%     Prüfung, ob 16 Pixel Abstand zum Rand des Bildes in x und y-Richtung vorhanden sind, sonst Eliminierung
+% 
+%     Ein SplineImageView wird für das verwendete Bild erzeugt
+% 
+%     Der Keypoint wird um seine Orientierung gedreht und für die benachbarten 16x16 Pixel werden wieder Magnitude und Winkel berechnet
+% 
+%     Der Abstand, der benachbarten Pixel zum Keypoint wird mit einem Gauss gewichtet (8) und mit der Magnitude multipliziert. Dieser Wert wird je nach berechnetem Winkel in ein Histogramm mit 8 Fächern eingetragen, wobei jedes Fach für 45° steht
+% 
+%     Die Pixel werden je nach Lage in Regionen eingeteilt, für die es jeweils ein Histogramm gibt. Eine Region besteht aus 4x4 Pixeln, also gibt es 16 Regionen. Jede Region hat ein Histogramm mit 8 Fächern.
+% 
+% 
+%     ToDo: Die Werte von Pixeln müssen auch in Histogramme benachbarter Regionen eingetragen werden und mit der Distanz dazu gewichtet werden [evtl einen Abschnitt tiefer]
+% 
+% 
+%     Die Histogramme sind die Deskriptoren der Keypoints.
 
 \section{Vergleich des Erreichten mit der Vorgabe}
+Im Vergleich mit dem, was Lowe \cite{Lowe} getan hat ...
 
 %%%% Literatur
 \newpage
