@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2015.7.9)  15 JUL 2015 17:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2015.7.9)  27 JUL 2015 18:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -364,21 +364,25 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen104
 \Gin@req@width=\dimen105
 )
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip10
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
 (./Ausarbeitung_ProjektBV_SoSe15_GeiserPorsiel.aux)
 \openout1 = `Ausarbeitung_ProjektBV_SoSe15_GeiserPorsiel.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
-LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
+LaTeX Font Info:    ... okay on input line 14.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -442,14 +446,39 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <17.28> on input line 16.
+(Font)              <17.28> on input line 17.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 16.
+(Font)              <12> on input line 17.
 
 [1
 
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+(./Ausarbeitung_ProjektBV_SoSe15_GeiserPorsiel.toc
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 3.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 3.
+)
+\tf@toc=\write3
+\openout3 = `Ausarbeitung_ProjektBV_SoSe15_GeiserPorsiel.toc'.
+
+ [2]
+Underfull \hbox (badness 10000) in paragraph at lines 34--79
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--79
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--79
+
+ []
+
+[3]
 Package epstopdf Info: Source file: <bild.eps>
 (epstopdf)                    date: 2015-07-15 16:13:14
 (epstopdf)                    size: 1251520 bytes
@@ -458,14 +487,13 @@ Package epstopdf Info: Source file: <bild.eps>
 (epstopdf)                    size: 280598 bytes
 (epstopdf)             Command: <repstopdf --outfile=bild-eps-converted-to.pdf 
 bild.eps>
-(epstopdf)             \includegraphics on input line 34.
+(epstopdf)             \includegraphics on input line 132.
 Package epstopdf Info: Output file is already uptodate.
-
-<bild-eps-converted-to.pdf, id=10, 1204.5pt x 1204.5pt>
+ <bild-eps-converted-to.pdf, id=23, 1204.5pt x 1204.5pt>
 File: bild-eps-converted-to.pdf Graphic file (type pdf)
 
 <use bild-eps-converted-to.pdf>
-Package pdftex.def Info: bild-eps-converted-to.pdf used on input line 34.
+Package pdftex.def Info: bild-eps-converted-to.pdf used on input line 132.
 (pdftex.def)             Requested size: 201.65755pt x 201.6562pt.
 Package epstopdf Info: Source file: <1Extrema.eps>
 (epstopdf)                    date: 2015-07-15 16:14:46
@@ -475,33 +503,47 @@ Package epstopdf Info: Source file: <1Extrema.eps>
 (epstopdf)                    size: 277982 bytes
 (epstopdf)             Command: <repstopdf --outfile=1Extrema-eps-converted-to.
 pdf 1Extrema.eps>
-(epstopdf)             \includegraphics on input line 35.
+(epstopdf)             \includegraphics on input line 133.
 Package epstopdf Info: Output file is already uptodate.
 
-<1Extrema-eps-converted-to.pdf, id=11, 950.55125pt x 931.48pt>
+<1Extrema-eps-converted-to.pdf, id=24, 950.55125pt x 931.48pt>
 File: 1Extrema-eps-converted-to.pdf Graphic file (type pdf)
 
 <use 1Extrema-eps-converted-to.pdf>
-Package pdftex.def Info: 1Extrema-eps-converted-to.pdf used on input line 35.
+Package pdftex.def Info: 1Extrema-eps-converted-to.pdf used on input line 133.
 (pdftex.def)             Requested size: 201.65755pt x 197.60641pt.
-Package epstopdf Info: Source file: <2SubpixelmHintergrund.eps>
-(epstopdf)                    date: 2015-07-15 16:15:02
-(epstopdf)                    size: 1592403 bytes
-(epstopdf)             Output file: <2SubpixelmHintergrund-eps-converted-to.pdf
->
-(epstopdf)                    date: 2015-07-15 16:23:52
-(epstopdf)                    size: 371337 bytes
-(epstopdf)             Command: <repstopdf --outfile=2SubpixelmHintergrund-eps-
-converted-to.pdf 2SubpixelmHintergrund.eps>
-(epstopdf)             \includegraphics on input line 45.
+Package epstopdf Info: Source file: <1Extrema.eps>
+(epstopdf)                    date: 2015-07-15 16:14:46
+(epstopdf)                    size: 1274316 bytes
+(epstopdf)             Output file: <1Extrema-eps-converted-to.pdf>
+(epstopdf)                    date: 2015-07-15 16:19:20
+(epstopdf)                    size: 277982 bytes
+(epstopdf)             Command: <repstopdf --outfile=1Extrema-eps-converted-to.
+pdf 1Extrema.eps>
+(epstopdf)             \includegraphics on input line 170.
+Package epstopdf Info: Output file is already uptodate.
+File: 1Extrema-eps-converted-to.pdf Graphic file (type pdf)
+ <use 1Extrema-eps-converted-to.pdf>
+Package pdftex.def Info: 1Extrema-eps-converted-to.pdf used on input line 170.
+(pdftex.def)             Requested size: 201.65755pt x 197.60641pt.
+Package epstopdf Info: Source file: <4RechteckemHkorrigiert.eps>
+(epstopdf)                    date: 2015-07-15 16:15:34
+(epstopdf)                    size: 1301035 bytes
+(epstopdf)             Output file: <4RechteckemHkorrigiert-eps-converted-to.pd
+f>
+(epstopdf)                    date: 2015-07-15 16:23:53
+(epstopdf)                    size: 292424 bytes
+(epstopdf)             Command: <repstopdf --outfile=4RechteckemHkorrigiert-eps
+-converted-to.pdf 4RechteckemHkorrigiert.eps>
+(epstopdf)             \includegraphics on input line 171.
 Package epstopdf Info: Output file is already uptodate.
 
-<2SubpixelmHintergrund-eps-converted-to.pdf, id=12, 963.6pt x 963.6pt>
-File: 2SubpixelmHintergrund-eps-converted-to.pdf Graphic file (type pdf)
+<4RechteckemHkorrigiert-eps-converted-to.pdf, id=25, 963.6pt x 963.6pt>
+File: 4RechteckemHkorrigiert-eps-converted-to.pdf Graphic file (type pdf)
 
-<use 2SubpixelmHintergrund-eps-converted-to.pdf>
-Package pdftex.def Info: 2SubpixelmHintergrund-eps-converted-to.pdf used on inp
-ut line 45.
+<use 4RechteckemHkorrigiert-eps-converted-to.pdf>
+Package pdftex.def Info: 4RechteckemHkorrigiert-eps-converted-to.pdf used on in
+put line 171.
 (pdftex.def)             Requested size: 201.65755pt x 201.6562pt.
 Package epstopdf Info: Source file: <4RechteckemHkorrigiert.eps>
 (epstopdf)                    date: 2015-07-15 16:15:34
@@ -512,15 +554,13 @@ f>
 (epstopdf)                    size: 292424 bytes
 (epstopdf)             Command: <repstopdf --outfile=4RechteckemHkorrigiert-eps
 -converted-to.pdf 4RechteckemHkorrigiert.eps>
-(epstopdf)             \includegraphics on input line 46.
+(epstopdf)             \includegraphics on input line 206.
 Package epstopdf Info: Output file is already uptodate.
-
-<4RechteckemHkorrigiert-eps-converted-to.pdf, id=13, 963.6pt x 963.6pt>
 File: 4RechteckemHkorrigiert-eps-converted-to.pdf Graphic file (type pdf)
 
 <use 4RechteckemHkorrigiert-eps-converted-to.pdf>
 Package pdftex.def Info: 4RechteckemHkorrigiert-eps-converted-to.pdf used on in
-put line 46.
+put line 206.
 (pdftex.def)             Requested size: 201.65755pt x 201.6562pt.
 Package epstopdf Info: Source file: <5RechteckOrientierung.eps>
 (epstopdf)                    date: 2015-07-15 16:15:47
@@ -531,58 +571,44 @@ Package epstopdf Info: Source file: <5RechteckOrientierung.eps>
 (epstopdf)                    size: 336826 bytes
 (epstopdf)             Command: <repstopdf --outfile=5RechteckOrientierung-eps-
 converted-to.pdf 5RechteckOrientierung.eps>
-(epstopdf)             \includegraphics on input line 47.
+(epstopdf)             \includegraphics on input line 207.
 Package epstopdf Info: Output file is already uptodate.
 
-<5RechteckOrientierung-eps-converted-to.pdf, id=14, 963.6pt x 963.6pt>
+<5RechteckOrientierung-eps-converted-to.pdf, id=26, 963.6pt x 963.6pt>
 File: 5RechteckOrientierung-eps-converted-to.pdf Graphic file (type pdf)
 
 <use 5RechteckOrientierung-eps-converted-to.pdf>
 Package pdftex.def Info: 5RechteckOrientierung-eps-converted-to.pdf used on inp
-ut line 47.
+ut line 207.
 (pdftex.def)             Requested size: 201.65755pt x 201.6562pt.
-Package epstopdf Info: Source file: <6RechteckOrientierungLastVer.eps>
-(epstopdf)                    date: 2015-07-15 16:15:59
-(epstopdf)                    size: 1506889 bytes
-(epstopdf)             Output file: <6RechteckOrientierungLastVer-eps-converted
--to.pdf>
-(epstopdf)                    date: 2015-07-15 16:23:54
-(epstopdf)                    size: 336824 bytes
-(epstopdf)             Command: <repstopdf --outfile=6RechteckOrientierungLastV
-er-eps-converted-to.pdf 6RechteckOrientierungLastVer.eps>
-(epstopdf)             \includegraphics on input line 48.
-Package epstopdf Info: Output file is already uptodate.
-
-<6RechteckOrientierungLastVer-eps-converted-to.pdf, id=15, 963.6pt x 963.6pt>
-File: 6RechteckOrientierungLastVer-eps-converted-to.pdf Graphic file (type pdf)
-
-
-<use 6RechteckOrientierungLastVer-eps-converted-to.pdf>
-Package pdftex.def Info: 6RechteckOrientierungLastVer-eps-converted-to.pdf used
- on input line 48.
-(pdftex.def)             Requested size: 201.65755pt x 201.6562pt.
- [2 <./bild-eps-converted-to.pdf> <./1Extrema-eps-converted-to.pdf>] [3 <./2Sub
-pixelmHintergrund-eps-converted-to.pdf> <./4RechteckemHkorrigiert-eps-converted
--to.pdf> <./5RechteckOrientierung-eps-converted-to.pdf> <./6RechteckOrientierun
-gLastVer-eps-converted-to.pdf>] [4] (./Ausarbeitung_ProjektBV_SoSe15_GeiserPors
-iel.aux) ) 
+ [4 <./bild-eps-converted-to.pdf> <./1Extrema-eps-converted-to.pdf>] [5 <./4Rec
+hteckemHkorrigiert-eps-converted-to.pdf> <./5RechteckOrientierung-eps-converted
+-to.pdf>] [6]
+(./Ausarbeitung_ProjektBV_SoSe15_GeiserPorsiel.aux) ) 
 Here is how much of TeX's memory you used:
- 3694 strings out of 493089
- 57669 string characters out of 6137055
- 182694 words of memory out of 5000000
- 7128 multiletter control sequences out of 15000+600000
- 7297 words of font info for 26 fonts, out of 8000000 for 9000
+ 3795 strings out of 493089
+ 58753 string characters out of 6137055
+ 188805 words of memory out of 5000000
+ 7217 multiletter control sequences out of 15000+600000
+ 9289 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 46i,6n,50p,284b,242s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/sh
-are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on Ausarbeitung_ProjektBV_SoSe15_GeiserPorsiel.pdf (4 pages, 193
-9255 bytes).
+ 46i,6n,50p,324b,240s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmssb
+x10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on Ausarbeitung_ProjektBV_SoSe15_GeiserPorsiel.pdf (6 pages, 129
+7302 bytes).
 PDF statistics:
- 56 PDF objects out of 1000 (max. 8388607)
- 34 compressed objects within 1 object stream
+ 82 PDF objects out of 1000 (max. 8388607)
+ 55 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
